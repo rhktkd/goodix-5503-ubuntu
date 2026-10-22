@@ -1,10 +1,8 @@
 # Goodix 5503 Ubuntu integration
 
-**AI 사용 고지:** 이 프로젝트의 통합 코드·패치·테스트·문서는 OpenAI Codex의 AI 지원을 받아 작성했습니다. 기존 커뮤니티 드라이버를 기반으로 하며, AI가 원본 드라이버를 독자 개발했다고 주장하지 않습니다. [AI 사용 범위와 사람의 검증](AI_USAGE.md) · [출처와 라이선스](NOTICE.md)
-
 Goodix USB **`27c6:5503`** 지문 센서를 Ubuntu의 `libfprint` / `fprintd`에 연결하는 실험용 통합 도구입니다. **ThinkBook 14 G3 ACL / Ubuntu 26.04.1 amd64**에서 설치·페어링·등록·`verify-match`·지문 잠금 해제까지 사용자가 확인했습니다. [검증 범위와 한계](docs/VALIDATION.md)
 
-This is an **AI-assisted** Ubuntu integration of the existing [Goodix 5503 community driver](https://github.com/Duro02/goodix-5503-linux), with a recorded local pairing patch. It is not an official Lenovo/Goodix driver or an independently audited biometric product.
+This is an Ubuntu integration of the existing [Goodix 5503 community driver](https://github.com/Duro02/goodix-5503-linux), with a recorded local pairing patch. It is not an official Lenovo/Goodix driver or an independently audited biometric product.
 
 ## 지원 범위
 
@@ -77,7 +75,6 @@ sudo pam-auth-update --disable fprintd
 
 - [검증 결과와 테스트 실행](docs/VALIDATION.md)
 - [고정 아티팩트 해시](docs/ARTIFACTS.md)
-- [AI 사용 고지](AI_USAGE.md)
 - [원저작자·라이선스](NOTICE.md)
 
 원본 통합 코드와 로컬 패치는 **LGPL-2.1-or-later**, 추출기는 파일에 보존된 zlib-style 라이선스를 따릅니다. [LICENSE](LICENSE)

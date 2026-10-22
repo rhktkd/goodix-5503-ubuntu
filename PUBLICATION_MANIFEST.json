@@ -2,22 +2,16 @@
   "format": 1,
   "repository": "https://github.com/rhktkd/goodix-5503-ubuntu",
   "scope": "Source-only allowlist; excludes proprietary binaries, credentials, biometric data and local evidence",
-  "ai_disclosure": "AI_USAGE.md and README.md",
   "files": {
     "README.md": {
-      "bytes": 5267,
-      "sha256": "04e96e2d63b33e68d7b9d5ff55fe906b6c8586438a1043931a519145180d5dab",
-      "git_blob_sha1": "0546869f7bbbbc1b2604c3e0dc09f6d7371c1da9"
-    },
-    "AI_USAGE.md": {
-      "bytes": 2175,
-      "sha256": "1487cc1524ce7b2849a22a63c73bc07f0a1844dcf74c13ad07b618374a2b84bc",
-      "git_blob_sha1": "d9b5b39ae5e06e80a20c276df338cbd8b280cad5"
+      "bytes": 4847,
+      "sha256": "7e88005d61d7c7f02bf20fbe8c3afcf7a5f2e0e9070d4fa930b81379d95c56c1",
+      "git_blob_sha1": "78c2c18d1e3da4847fb5d59d9762ed1ab8c969f3"
     },
     "NOTICE.md": {
-      "bytes": 1887,
-      "sha256": "6446edcc7b78c3edd3be9f0e2f10835c047cf5ed20960d6550236959d0f2f06f",
-      "git_blob_sha1": "aedd94a6b6bebafd973b162e88bc6bc09321445d"
+      "bytes": 1804,
+      "sha256": "daa2bae78e07a540931fc352c6276d4d05763e429b65acc360639ad9f6745728",
+      "git_blob_sha1": "083c4f9d89a53e79c164f8f571beffe02d3b1ea9"
     },
     "LICENSE": {
       "bytes": 26419,
@@ -55,9 +49,9 @@
       "git_blob_sha1": "5143eb9eeb71d5a671713d242db490ff952b3c75"
     },
     "tools/export_public.py": {
-      "bytes": 3192,
-      "sha256": "20b84518a11e0fe2c10bf65103356a70daca19bbe70ca435b780e13ae288dedf",
-      "git_blob_sha1": "41d08c5a87e68e54cd377966f928ff6e2f1d2c83"
+      "bytes": 3131,
+      "sha256": "fe37d8692d29b3e5a53caedcf0fc7a5d04b55128a4eeffdbab1e9344e56050b7",
+      "git_blob_sha1": "31cc54443548d6aa3e7e387769c79eeb15724c14"
     },
     "tests/test_ubuntu_tooling.py": {
       "bytes": 17180,
@@ -91,12 +85,6 @@
     "patched_upstream_python": "64 passed, 0 skipped",
     "pairing_profile_mock": "6 passed",
     "native_sigfm": "4 passed",
-    "hardware": "single-device enrollment/verify/unlock confirmed by user",
-    "clean_source_export": {
-      "tests": 15,
-      "passed": 11,
-      "skipped": 4,
-      "reason": "Proprietary installers and downloaded upstream source are intentionally absent"
-    }
+    "hardware": "single-device enrollment/verify/unlock confirmed by user"
   }
 }

@@ -8,7 +8,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 FILES = (
-    'README.md', 'AI_USAGE.md', 'NOTICE.md', 'LICENSE', '.gitignore',
+    'README.md', 'NOTICE.md', 'LICENSE', '.gitignore',
     'ubuntu-goodix5503.py', 'sources.lock.json',
     'patches/pairing-profile.patch', 'patches/pairing-profile.json',
     'tools/extract_inno_payload.py', 'tools/export_public.py',
@@ -37,7 +37,7 @@ def export(destination):
     destination.mkdir(parents=True, exist_ok=False)
     manifest = {'format': 1, 'repository': 'https://github.com/rhktkd/goodix-5503-ubuntu',
                 'scope': 'Source-only allowlist; excludes proprietary binaries, credentials, biometric data and local evidence',
-                'ai_disclosure': 'AI_USAGE.md and README.md', 'files': {}}
+                'files': {}}
     for relative, data in collected.items():
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
