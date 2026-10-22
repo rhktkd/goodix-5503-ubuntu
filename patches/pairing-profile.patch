@@ -1,0 +1,170 @@
+diff --git a/src/goodix5503/setup.py b/src/goodix5503/setup.py
+--- a/src/goodix5503/setup.py
++++ b/src/goodix5503/setup.py
+@@ -37,6 +37,7 @@
+     provision_prepared_pairing,
+ )
+ from .security import disable_core_dumps
++from .identity import require_pairing_identity
+ from .whitebox import WhiteboxError, find_pinned_wbdi
+ 
+ SYSTEM_PSK_PATH: Final = Path("/var/lib/fprint/goodix5503/psk.bin")
+@@ -114,10 +115,10 @@
+             iap = _decode_c_string(
+                 session.request(COMMAND_GET_IAP_VERSION, b"\x19\x00")
+             )
+-            if firmware != EXPECTED_FIRMWARE or iap != EXPECTED_IAP:
+-                raise SetupError(
+-                    f"unsupported firmware/IAP: {firmware!r} / {iap!r}"
+-                )
++            try:
++                require_pairing_identity(firmware, iap)
++            except RuntimeError as error:
++                raise SetupError(str(error)) from error
+             live = _read_live_verification(session)
+         try:
+             host = _read_exact_secure_file(SYSTEM_PSK_PATH, 32, expected_uid=0)
+diff --git a/src/goodix5503/provision.py b/src/goodix5503/provision.py
+--- a/src/goodix5503/provision.py
++++ b/src/goodix5503/provision.py
+@@ -11,6 +11,7 @@
+ import hmac
+ import os
+ import struct
++import time
+ from pathlib import Path
+ from typing import Final
+ 
+@@ -38,6 +39,7 @@
+     _drop_sudo_privileges,
+ )
+ from .whitebox import emulate_whitebox, find_pinned_wbdi, verify_known_vector
++from .identity import require_pairing_identity
+ 
+ COMMAND_PRESET_PSK_WRITE_R: Final = 0xE0
+ EXPECTED_FIRMWARE: Final = "GF3258_RTSEC_APP_10063"
+@@ -47,6 +49,43 @@
+ 
+ class ProvisioningError(RuntimeError):
+     """A fixed provisioning precondition or postcondition failed."""
++
++
++def _attest_before_psk_write(
++    session: ReadOnlyUsbSession, expected_before: bytearray
++) -> None:
++    """Fixed volatile reset and DN2/R-record check; never writes Flash or PSK.
++
++    Reachable only after public confirmation, material validation and old-state
++    comparison. The public read-only transport whitelist remains unchanged.
++    Reset command/payload and the register query match the pinned C runtime.
++    """
++    if not isinstance(expected_before, bytearray) or len(expected_before) != 32:
++        raise ProvisioningError("expected pre-reset R record must be 32 mutable bytes")
++    response = session._ReadOnlyUsbSession__exchange(  # type: ignore[attr-defined]
++        0xA2, b"\x05\x14"
++    )
++    if not isinstance(response, (bytes, bytearray)) or len(response) > 4:
++        raise ProvisioningError("invalid fixed MCU reset response")
++    time.sleep(0.010)
++    chip_id = session.read_chip_id()
++    if chip_id != 0x220F:
++        raise ProvisioningError(
++            f"unsupported MCU chip profile {chip_id:#x}; expected DN2 0x220f; PSK not written"
++        )
++    firmware = _decode_c_string(session.request(COMMAND_FIRMWARE_VERSION))
++    iap = _decode_c_string(session.request(COMMAND_GET_IAP_VERSION, b"\x19\x00"))
++    try:
++        require_pairing_identity(firmware, iap)
++    except RuntimeError as error:
++        raise ProvisioningError(str(error)) from error
++    live_after_reset = bytearray()
++    try:
++        live_after_reset = _read_live_verification(session)
++        if not hmac.compare_digest(live_after_reset, expected_before):
++            raise ProvisioningError("R verification record changed during MCU reset; PSK not written")
++    finally:
++        live_after_reset[:] = b"\x00" * len(live_after_reset)
+ 
+ 
+ def _write_prepared_whitebox(
+@@ -141,10 +180,10 @@
+         session.request(COMMAND_NOP, checksum=False)
+         firmware = _decode_c_string(session.request(COMMAND_FIRMWARE_VERSION))
+         iap = _decode_c_string(session.request(COMMAND_GET_IAP_VERSION, b"\x19\x00"))
+-        if firmware != EXPECTED_FIRMWARE or iap != EXPECTED_IAP:
+-            raise ProvisioningError(
+-                f"unexpected target firmware/IAP: {firmware!r} / {iap!r}"
+-            )
++        try:
++            require_pairing_identity(firmware, iap)
++        except RuntimeError as error:
++            raise ProvisioningError(str(error)) from error
+         live_before = _read_live_verification(session)
+ 
+         # Keep the claimed USB handle, but permanently become the invoking user
+@@ -170,6 +209,8 @@
+             raise ProvisioningError(
+                 "live PSK state matches neither the old backup nor the prepared key"
+             )
++
++        _attest_before_psk_write(session, live_before)
+ 
+         try:
+             _write_prepared_whitebox(session, whitebox)
+diff --git a/src/goodix5503/identity.py b/src/goodix5503/identity.py
+new file mode 100644
+--- /dev/null
++++ b/src/goodix5503/identity.py
+@@ -0,0 +1,16 @@
++"""Local Ubuntu integration: exact identities already admitted by the C driver.
++
++This module only checks strings. Provisioning separately attests the reset-time
++DN2 chip profile and R-family record before any persistent PSK write.
++"""
++from typing import Final
++
++EXPECTED_FIRMWARE: Final = "GF3258_RTSEC_APP_10063"
++POST_RESET_FIRMWARE: Final = "GF3208_RTSEC_APP_10063"
++PAIRING_FIRMWARE_IDS: Final = frozenset((EXPECTED_FIRMWARE, POST_RESET_FIRMWARE))
++EXPECTED_IAP: Final = "MILAN_RTSEC_IAP_10027"
++
++
++def require_pairing_identity(firmware: str, iap: str) -> None:
++    if firmware not in PAIRING_FIRMWARE_IDS or iap != EXPECTED_IAP:
++        raise RuntimeError(f"unsupported firmware/IAP: {firmware!r} / {iap!r}")
+diff --git a/tests/test_provision.py b/tests/test_provision.py
+--- a/tests/test_provision.py
++++ b/tests/test_provision.py
+@@ -118,7 +118,7 @@
+         psk = bytearray(b"\x22" * 32)
+         whitebox = bytearray(b"\x33" * 96)
+         expected = bytearray(b"\x44" * 32)
+-        live_records = [bytes(old), bytes(expected)]
++        live_records = [bytes(old), bytes(old), bytes(expected)]
+ 
+         class FakeSession:
+             def __init__(self, _timeout):
+@@ -146,6 +146,14 @@
+             def close(self):
+                 self.closed = True
+ 
++            def _ReadOnlyUsbSession__exchange(self, command, payload):
++                if command != 0xA2 or payload != b"\x05\x14":
++                    raise AssertionError("only fixed runtime reset is expected")
++                return b""
++
++            def read_chip_id(self):
++                return 0x220F
++
+         fake = FakeSession(5)
+ 
+         def write(_session, value):
+@@ -195,6 +203,8 @@
+             raise AssertionError(f"unexpected command {command:#x}")
+ 
+         session.request.side_effect = request
++        session._ReadOnlyUsbSession__exchange.return_value = b""
++        session.read_chip_id.return_value = 0x220F
+         session.close.side_effect = OSError("injected close failure")
+         with (
+             patch.object(provision, "ReadOnlyUsbSession", return_value=session),

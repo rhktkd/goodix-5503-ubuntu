@@ -1,0 +1,23 @@
+{
+  "base_commit": "c7c22acb8ef6288742d53c381d2911858934cfe0",
+  "scope": "Python pairing only; native C driver unchanged; no hardware writes by agent",
+  "files": {
+    "src/goodix5503/setup.py": {
+      "base_sha256": "fae2e5d7b79cc1daf206c49926c5979b6c83efbfa08430964ed9a976e03f393e",
+      "patched_sha256": "6850db84cb9d2a9d6aa149447fb29118cb5e24510e9b67b99b34d5f8fe40f9d9"
+    },
+    "src/goodix5503/provision.py": {
+      "base_sha256": "5ad37a6f7d332719eb1153604bbc4606dac50dfd58d48baad82afd7336bf60a5",
+      "patched_sha256": "595fc77962d7130913c20b02726c1d0a1f6bcae65b7e9291ca5e84cd07a2af45"
+    },
+    "src/goodix5503/identity.py": {
+      "base_sha256": null,
+      "patched_sha256": "2fdf9f50db4772b0529ba246217d7ce4c9b506f2c99fa394d308a55b31bc1417"
+    },
+    "tests/test_provision.py": {
+      "base_sha256": "f62d08dc69c5d1cfc19d4f614454f7eb638640d787f13dcb9bd0720fe1e8c7d1",
+      "patched_sha256": "35da0858eb146fbed787108fe70fef93b3a79b6302693ea04decb56738223bd0"
+    }
+  },
+  "patch_sha256": "496eb1c4b01d3ec50ced97fb5b52dbe367118f66927ff89fb52e82bd3101893c"
+}

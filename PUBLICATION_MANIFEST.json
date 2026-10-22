@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "repository": "https://github.com/rhktkd/goodix-5503-ubuntu",
+  "scope": "Source-only allowlist; excludes proprietary binaries, credentials, biometric data and local evidence",
+  "ai_disclosure": "AI_USAGE.md and README.md",
+  "files": {
+    "README.md": {
+      "bytes": 5267,
+      "sha256": "04e96e2d63b33e68d7b9d5ff55fe906b6c8586438a1043931a519145180d5dab",
+      "git_blob_sha1": "0546869f7bbbbc1b2604c3e0dc09f6d7371c1da9"
+    },
+    "AI_USAGE.md": {
+      "bytes": 2175,
+      "sha256": "1487cc1524ce7b2849a22a63c73bc07f0a1844dcf74c13ad07b618374a2b84bc",
+      "git_blob_sha1": "d9b5b39ae5e06e80a20c276df338cbd8b280cad5"
+    },
+    "NOTICE.md": {
+      "bytes": 1887,
+      "sha256": "6446edcc7b78c3edd3be9f0e2f10835c047cf5ed20960d6550236959d0f2f06f",
+      "git_blob_sha1": "aedd94a6b6bebafd973b162e88bc6bc09321445d"
+    },
+    "LICENSE": {
+      "bytes": 26419,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "git_blob_sha1": "f6683e74e0f0130f246dbf7054f4cacc88ca84b0"
+    },
+    ".gitignore": {
+      "bytes": 336,
+      "sha256": "61de31546f19efd376c9ab6e222e544d93a3aa73ac87915706363f651ffa5c75",
+      "git_blob_sha1": "e4d4c986f9bc4df12e56dac9a82d1b183fbcaf50"
+    },
+    "ubuntu-goodix5503.py": {
+      "bytes": 28127,
+      "sha256": "bb6308c6c1d59aaa3f9cc1067c75097ffef109582056a3ae89414408d02d3878",
+      "git_blob_sha1": "3e54f2162bd2fe67ae3e46f22f54581dd02df2ae"
+    },
+    "sources.lock.json": {
+      "bytes": 222,
+      "sha256": "2167440949e87b2cbc0f6c78d2aae7d265aabe599d658714885af7ba622bf5b8",
+      "git_blob_sha1": "6dfe6943fa26743e7e52d46f91c894e4b0771bc8"
+    },
+    "patches/pairing-profile.patch": {
+      "bytes": 6802,
+      "sha256": "496eb1c4b01d3ec50ced97fb5b52dbe367118f66927ff89fb52e82bd3101893c",
+      "git_blob_sha1": "1ab24f0d72f9ccbe0e90bf15b604f1e43e7e89c1"
+    },
+    "patches/pairing-profile.json": {
+      "bytes": 1082,
+      "sha256": "1adab4e6ca83e04ec195825f81127a725ce73fb507a0b63c36c334055acfbe7f",
+      "git_blob_sha1": "8986df3f55754a13e38a7c88696e8f69dfed933c"
+    },
+    "tools/extract_inno_payload.py": {
+      "bytes": 8314,
+      "sha256": "a3a1207742a386b9175365703a34c77ca86bb4517c6bb283a35f825d666b99aa",
+      "git_blob_sha1": "5143eb9eeb71d5a671713d242db490ff952b3c75"
+    },
+    "tools/export_public.py": {
+      "bytes": 3192,
+      "sha256": "20b84518a11e0fe2c10bf65103356a70daca19bbe70ca435b780e13ae288dedf",
+      "git_blob_sha1": "41d08c5a87e68e54cd377966f928ff6e2f1d2c83"
+    },
+    "tests/test_ubuntu_tooling.py": {
+      "bytes": 17180,
+      "sha256": "3d14fad61a37ec5615215bfdcbf4a5f45fc2f59699df3b8de6c15001dfc34159",
+      "git_blob_sha1": "f088270270c192f4b792f406ce6b270c0790e4f4"
+    },
+    "tests/test_pairing_profile.py": {
+      "bytes": 8625,
+      "sha256": "3853e05b14d2a770402f6a76a6c177c85dea80cc8f3b78ee2622d43f905e4bce",
+      "git_blob_sha1": "be07919abbe1594de8be4936b5fafd50cd567762"
+    },
+    "tests/test_source_bootstrap.py": {
+      "bytes": 1765,
+      "sha256": "1c21dd608cd49f05356828fe346a08309b35ea2485a5fff9e1a3ce0c3d64cee8",
+      "git_blob_sha1": "7301ebf44a5c30e2ac119830b545153dd01880e2"
+    },
+    "docs/VALIDATION.md": {
+      "bytes": 3017,
+      "sha256": "01caef6cfb561a73d28c96d97e058c93b629359ea53df3fbeecabe4407dc2701",
+      "git_blob_sha1": "8a272bb645d9d887589bf727e822328346095300"
+    },
+    "docs/ARTIFACTS.md": {
+      "bytes": 1088,
+      "sha256": "f9bcb8c2fab94545e23d14af1f2990e498e2b970d2c252bf0da048b95e845325",
+      "git_blob_sha1": "6f1b9adb263062f5a30c90a1907882cde019495b"
+    }
+  },
+  "validation": {
+    "source_tooling": "13 passed",
+    "pristine_upstream_patch": "1 passed",
+    "patched_upstream_python": "64 passed, 0 skipped",
+    "pairing_profile_mock": "6 passed",
+    "native_sigfm": "4 passed",
+    "hardware": "single-device enrollment/verify/unlock confirmed by user",
+    "clean_source_export": {
+      "tests": 15,
+      "passed": 11,
+      "skipped": 4,
+      "reason": "Proprietary installers and downloaded upstream source are intentionally absent"
+    }
+  }
+}
